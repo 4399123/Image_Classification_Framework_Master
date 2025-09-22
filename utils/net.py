@@ -99,32 +99,29 @@ def load_checkpoint(
     incompatible_keys = model.load_state_dict(state_dict, strict=strict)
     return incompatible_keys
 
-class classifier(nn.Module):
-    def __init__(self, in_ch, num_classes,embeddingdim):
-        super(classifier, self).__init__()
-        # self.avgpool = nn.AdaptiveAvgPool2d(output_size=(1, 1))
-        self.fc1 = nn.Linear(in_ch, embeddingdim)
-        self.fc2 = nn.Linear(embeddingdim, num_classes)
 
-    def forward(self, x):
-        H,W=x.size()[2:]
-        inputsz=np.array([H,W])
-        outputsz = np.array([1, 1])
-        stridesz = np.floor(inputsz / outputsz).astype(np.int32)
-        kernelsz = inputsz - (outputsz - 1) * stridesz
-        x=F.avg_pool2d(x,kernel_size=list(kernelsz),stride=list(stridesz))
-        # x = self.avgpool(x)
+class classifier(nn.Module):
+    def __init__(self, in_ch: int, num_classes: int, embedding_dim: int):
+        super().__init__()
+        self.fc1 = nn.Linear(in_ch, embedding_dim)
+        self.fc2 = nn.Linear(embedding_dim, num_classes)
+
+    def forward(self, x: torch.Tensor):
+        # <--- 优化点: 使用 torch.mean 实现全局平均池化
+        # dim=(-2, -1) 表示对最后两个维度 (H, W) 求均值
+        # keepdim=True 保持维度为 [B, C, 1, 1]，以便后续 flatten
+        x = torch.mean(x, dim=(-2, -1), keepdim=True)
         x = torch.flatten(x, 1)
         x = self.fc1(x)
-        feature=F.relu(x)
+        feature = F.relu(x)
         out = self.fc2(feature)
-        return feature,out
+        return feature, out
 
 
 class Net(nn.Module):
-    def __init__(self,model_name ,num_class,pretrained=False,mode='train',embeddingdim=512):
+    def __init__(self,model_name ,num_class,mode='train',embeddingdim=512):
         super(Net, self).__init__()
-        selected_feature_extractor = timm.create_model(model_name,features_only=True, out_indices=[-1],pretrained=pretrained )
+        self.backbone = timm.create_model(model_name,features_only=True, out_indices=[-1],pretrained=False )
 
         if('dinov3_lvd1689m') in model_name:
             filename = model_name.split('.')[0]+'_dinov3'
@@ -132,25 +129,25 @@ class Net(nn.Module):
             filename=model_name.split('.')[0]
 
         try :
-            load_checkpoint(selected_feature_extractor, './premodels/{}.pth'.format(filename))
+            load_checkpoint(self.backbone, './premodels/{}.pth'.format(filename))
         except:
 
-            load_checkpoint(selected_feature_extractor, './utils/premodels/{}.pth'.format(filename))
+            load_checkpoint(self.backbone, './utils/premodels/{}.pth'.format(filename))
 
 
-        aa=list(selected_feature_extractor.named_modules())
+        # aa=list(selected_feature_extractor.named_modules())[-1]
+        # ee=list(model.named_modules())[-1][1]
+        # if ('dinov3' in model_name):
+        #     if ('convnext_tiny.dinov3_lvd1689m') in model_name:
+        #         fc_in_ch = list(selected_feature_extractor.named_modules())[233][1].out_features
+        #
+        #     else:
+        #         fc_in_ch = list(selected_feature_extractor.named_modules())[246][1].out_features
+        #
+        # else:
+        #     fc_in_ch = list(selected_feature_extractor.named_modules())[161][1].out_channels
 
-        if ('dinov3' in model_name):
-            if ('convnext_tiny.dinov3_lvd1689m') in model_name:
-                fc_in_ch = list(selected_feature_extractor.named_modules())[233][1].out_features
-
-            else:
-                fc_in_ch = list(selected_feature_extractor.named_modules())[246][1].out_features
-
-        else:
-            fc_in_ch = list(selected_feature_extractor.named_modules())[161][1].out_channels
-
-        self.backbone = selected_feature_extractor
+        fc_in_ch = self.backbone.feature_info[-1]['num_chs']
         self.classifier = classifier(fc_in_ch, num_class,embeddingdim)
         self.mode=mode
 
@@ -171,12 +168,15 @@ class Net(nn.Module):
             return index,score
 
 if __name__=="__main__":
-    # net=Net('convnext_pico.d1_in1k',num_class=9,pretrained=False,embeddingdim=128,mode='pred')
-    net = Net('convnext_tiny.dinov3_lvd1689m', num_class=9, pretrained=False, embeddingdim=128, mode='pred')
-    # net = Net('vit_base_patch16_dinov3.lvd_1689m', num_class=9, pretrained=False, embeddingdim=128, mode='pred')
+    # net=Net('convnext_pico.d1_in1k',num_class=9,embeddingdim=128,mode='pred')
+    net = Net('convnext_tiny.dinov3_lvd1689m', num_class=9, embeddingdim=128, mode='pred')
+    # net = Net('vit_base_patch16_dinov3.lvd_1689m', num_class=9, embeddingdim=128, mode='pred')
+    # net = Net('fastvit_mci3.apple_mclip2_dfndr2b', num_class=9, embeddingdim=128, mode='pred')
+    # net = Net('naflexvit_base_patch16_siglip.v2_webli', num_class=9, embeddingdim=128, mode='pred')
+    # net = Net('fasternet_t0.in1k', num_class=9, embeddingdim=128, mode='pred')
     # summary(net,(3,224,224))
     net.eval()
-    in_ten = torch.randn(3, 3,224, 224)
+    in_ten = torch.randn(3, 3,512, 512)
     index,score=net(in_ten)
     print(index)
     print(score)

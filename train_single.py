@@ -57,10 +57,13 @@ with open('./pt/lable.plk','wb') as f:
 ## meters
 time_meter= TimeMeter(args.epochs)
 
-net=Net('convnext_pico.d1_in1k',num_class=num_classes,pretrained=False,embeddingdim=args.embeddingdim,mode='train').to(device)
-# net=Net('convnext_nano.d1h_in1k',num_class=num_classes,pretrained=False,embeddingdim=args.embeddingdim,mode='train').to(device)
-# net=Net('convnextv2_pico.fcmae_ft_in1k',num_class=num_classes,pretrained=False,embeddingdim=args.embeddingdim,mode='train').to(device)
-# net=Net('tf_efficientnet_b2.ns_jft_in1k',num_class=num_classes,pretrained=False,embeddingdim=args.embeddingdim,mode='train').to(device)
+net=Net('convnext_pico.d1_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('convnext_tiny.dinov3_lvd1689m',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('vit_base_patch16_dinov3.lvd_1689m',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('fastvit_mci3.apple_mclip2_dfndr2b',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('naflexvit_base_patch16_siglip.v2_webli',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('fasternet_t0.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+
 
 model_ema=None
 if args.model_ema:

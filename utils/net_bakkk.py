@@ -124,38 +124,42 @@ class classifier(nn.Module):
 class Net(nn.Module):
     def __init__(self,model_name ,num_class,pretrained=False,mode='train',embeddingdim=512):
         super(Net, self).__init__()
-        selected_feature_extractor = timm.create_model(model_name,features_only=True, out_indices=[-1],pretrained=pretrained )
-
+        model = timm.create_model(model_name, pretrained=pretrained)
         if('dinov3_lvd1689m') in model_name:
             filename = model_name.split('.')[0]+'_dinov3'
         else:
             filename=model_name.split('.')[0]
 
+
         try :
-            load_checkpoint(selected_feature_extractor, './premodels/{}.pth'.format(filename))
+            load_checkpoint(model, './premodels/{}.pth'.format(filename))
         except:
 
-            load_checkpoint(selected_feature_extractor, './utils/premodels/{}.pth'.format(filename))
+            load_checkpoint(model, './utils/premodels/{}.pth'.format(filename))
+        aa=list(model.named_modules())
+        bb=list(model.named_modules())[-1][1]
 
-
-        aa=list(selected_feature_extractor.named_modules())
-
-        if ('dinov3' in model_name):
+        if('dinov3' in model_name):
             if ('convnext_tiny.dinov3_lvd1689m') in model_name:
-                fc_in_ch = list(selected_feature_extractor.named_modules())[233][1].out_features
-
+                fc_in_ch = list(model.named_modules())[235][1].out_features
+                self.backbone = nn.Sequential(*list(model.children())[:2])
             else:
-                fc_in_ch = list(selected_feature_extractor.named_modules())[246][1].out_features
-
+                # For other dinov3 models, use a more robust way to build backbone
+                modules = []
+                for name, module in model.named_children():
+                    if name != 'head' and name != 'fc':  # Skip classification head
+                        modules.append(module)
+                fc_in_ch = model.num_features if hasattr(model, 'num_features') else 768  # Default to 768 for ViT
+                self.backbone = nn.Sequential(*modules)
         else:
-            fc_in_ch = list(selected_feature_extractor.named_modules())[161][1].out_channels
-
-        self.backbone = selected_feature_extractor
+            # For non-dinov3 models
+            fc_in_ch = list(model.named_modules())[-1][1].in_features
+            self.backbone = nn.Sequential(*list(model.children())[:-2])
         self.classifier = classifier(fc_in_ch, num_class,embeddingdim)
         self.mode=mode
 
     def forward(self, x):
-        x = self.backbone(x)[0]
+        x = self.backbone(x)
         feature,out= self.classifier(x)
         if self.mode=='train':
             return feature,out
@@ -172,8 +176,8 @@ class Net(nn.Module):
 
 if __name__=="__main__":
     # net=Net('convnext_pico.d1_in1k',num_class=9,pretrained=False,embeddingdim=128,mode='pred')
-    net = Net('convnext_tiny.dinov3_lvd1689m', num_class=9, pretrained=False, embeddingdim=128, mode='pred')
-    # net = Net('vit_base_patch16_dinov3.lvd_1689m', num_class=9, pretrained=False, embeddingdim=128, mode='pred')
+    # net = Net('convnext_tiny.dinov3_lvd1689m', num_class=9, pretrained=False, embeddingdim=128, mode='pred')
+    net = Net('vit_base_patch16_dinov3.lvd_1689m', num_class=9, pretrained=False, embeddingdim=128, mode='pred')
     # summary(net,(3,224,224))
     net.eval()
     in_ten = torch.randn(3, 3,224, 224)

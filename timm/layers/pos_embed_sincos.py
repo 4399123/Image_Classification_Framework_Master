@@ -270,6 +270,18 @@ def apply_rot_embed_cat(
         half: bool = False
 ) -> torch.Tensor:
     sin_emb, cos_emb = emb.tensor_split(2, -1)
+    # Adjust dimensions if needed
+    if x.size(-1) != sin_emb.size(-1):
+        # For DINOv3 models, we need to handle special case where input dim is smaller than embedding dim
+        if x.size(-1) < sin_emb.size(-1):
+            # Truncate embeddings to match input dimension
+            sin_emb = sin_emb[..., :x.size(-1)]
+            cos_emb = cos_emb[..., :x.size(-1)]
+        else:
+            # Repeat or interpolate the embeddings to match input dimension
+            repeat_factor = x.size(-1) // sin_emb.size(-1)
+            sin_emb = sin_emb.repeat_interleave(repeat_factor, dim=-1)
+            cos_emb = cos_emb.repeat_interleave(repeat_factor, dim=-1)
     # x: [..., D], eg [x0, x1, x2, x3, x4, x5]
     if half:
         # sin: [..., D], eg [sin0, sin1, sin2, sin0, sin1, sin2]

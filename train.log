@@ -1,0 +1,10 @@
+Namespace(arcloss=True, bs=256, checkpoint=False, checkpoint_path='./pt/1.pt', embeddingdim=512, epochs=300, finetune_from=None, loss=1, lr=0.0003, model_ema=True, pathtrain='C:\\BaiduNetdiskDownload\\Splited/train', pathval='C:\\BaiduNetdiskDownload\\Splited/val')
+No checkpoint found at './premodels/fasternet_t0.pth'
+Loaded  from checkpoint './utils/premodels/fasternet_t0.pth'
+epoch:1/300,batch:1/16,lr:0.000100,train loss:6.16298,train acc:1.17%
+epoch:1/300,batch:2/16,lr:0.000100,train loss:5.79606,train acc:0.78%
+epoch:1/300,batch:3/16,lr:0.000100,train loss:5.92086,train acc:1.17%
+epoch:1/300,batch:4/16,lr:0.000100,train loss:6.02862,train acc:3.12%
+epoch:1/300,batch:5/16,lr:0.000100,train loss:6.03963,train acc:2.34%
+epoch:1/300,batch:6/16,lr:0.000100,train loss:5.74604,train acc:3.12%
+epoch:1/300,batch:7/16,lr:0.000100,train loss:5.83719,train acc:3.52%

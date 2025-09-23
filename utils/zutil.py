@@ -12,6 +12,7 @@ from pytorch_metric_learning import samplers
 import time
 import datetime
 from torchtoolbox.transform import Cutout
+from accelerate.utils import DistributedDataParallelKwargs
 # #训练日志保存
 def get_log(args):
     logger = logging.getLogger()
@@ -27,7 +28,10 @@ def get_log(args):
 def get_device_info():
 
     if torch.cuda.is_available():
-        accelerator = Accelerator(mixed_precision='fp16')
+
+        ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
+        accelerator = Accelerator(kwargs_handlers=[ddp_kwargs],mixed_precision='fp16')
+        # accelerator = Accelerator(mixed_precision='fp16')
         # torch.set_default_tensor_type('torch.cuda.FloatTensor')
         # accelerator = Accelerator(mixed_precision='bf16')
         torch.backends.cudnn.benchmark = True

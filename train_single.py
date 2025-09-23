@@ -22,13 +22,13 @@ import json
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 parser=argparse.ArgumentParser("classification")
-parser.add_argument('--pathtrain',default=r'../BlueFaceCls22PPM_V8/train',help='train data')
-parser.add_argument('--pathval',default=r'../BlueFaceCls22PPM_V8/val',help='val data')
-parser.add_argument('--bs',default=2508,type=int,help='batchsize')
+parser.add_argument('--pathtrain',default=r'C:\BaiduNetdiskDownload\Splited/train',help='train data')
+parser.add_argument('--pathval',default=r'C:\BaiduNetdiskDownload\Splited/val',help='val data')
+parser.add_argument('--bs',default=256,type=int,help='batchsize')
 parser.add_argument('--lr',default=0.0003)
-parser.add_argument('--epochs',default=800)
+parser.add_argument('--epochs',default=300)
 parser.add_argument('--loss',default='1',type=int,help='损失函数种类:0-4')
-parser.add_argument('--embeddingdim',default=1024,type=int,help='输出特征维度')
+parser.add_argument('--embeddingdim',default=512,type=int,help='输出特征维度')
 parser.add_argument('--finetune-from', type=str, default=None,)
 parser.add_argument('--arcloss', default=True, type=bool, help='使用arcfaceloss辅助训练')
 parser.add_argument('--model_ema',default=True,type=bool,help='是否使用权重指数平均移动')
@@ -36,7 +36,7 @@ parser.add_argument('--checkpoint',default=False,type=bool,help='是否使用断
 parser.add_argument('--checkpoint_path',default='./pt/1.pt',help='需要继续训练的模型路径')
 args=parser.parse_args()
 
-w,h=112,112
+w,h=331,331
 #构造tensorboard 写入容器
 writer=SummaryWriter()
 
@@ -57,12 +57,12 @@ with open('./pt/lable.plk','wb') as f:
 ## meters
 time_meter= TimeMeter(args.epochs)
 
-net=Net('convnext_pico.d1_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('convnext_pico.d1_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('convnext_tiny.dinov3_lvd1689m',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('vit_base_patch16_dinov3.lvd_1689m',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('fastvit_mci3.apple_mclip2_dfndr2b',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('naflexvit_base_patch16_siglip.v2_webli',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
-# net=Net('fasternet_t0.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+net=Net('fasternet_t0.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 
 
 model_ema=None

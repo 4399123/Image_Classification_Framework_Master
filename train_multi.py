@@ -22,14 +22,14 @@ import json
 os.environ["CUDA_VISIBLE_DEVICES"]="0,1,2,3"
 
 parser=argparse.ArgumentParser("classification")
-parser.add_argument('--pathtrain',default=r'../BlueFaceCls12PPM_N2/train',help='train data')
-parser.add_argument('--pathval',default=r'../BlueFaceCls12PPM_N2/val',help='val data')
-parser.add_argument('--bs',default=465,type=int,help='batchsize')
+parser.add_argument('--pathtrain',default=r'../TextureDataset/train',help='train data')
+parser.add_argument('--pathval',default=r'../TextureDataset/val',help='val data')
+parser.add_argument('--bs',default=256,type=int,help='batchsize')
 parser.add_argument('--lr',default=0.0002)
-parser.add_argument('--epochs',default=200)
+parser.add_argument('--epochs',default=300)
 parser.add_argument('--loss',default='1',type=int,help='损失函数种类:0-4')
-parser.add_argument('--embeddingdim',default=1024,type=int,help='输出特征维度')
-parser.add_argument('--finetune-from', type=str, default='./pt/best.pt',)
+parser.add_argument('--embeddingdim',default=512,type=int,help='输出特征维度')
+parser.add_argument('--finetune-from', type=str, default=None,)
 parser.add_argument('--arcloss', default=True, type=bool, help='使用arcfaceloss辅助训练')
 parser.add_argument('--model_ema',default=True,type=bool,help='是否使用权重指数平均移动')
 parser.add_argument('--checkpoint',default=False,type=bool,help='是否使用断点训练')
@@ -37,7 +37,7 @@ parser.add_argument('--checkpoint_path',default='./pt/1.pt',help='需要继续�
 parser.add_argument("--local_rank", type=int)
 args=parser.parse_args()
 
-w,h=112,112
+w,h=331,331
 #构造tensorboard 写入容器
 writer=SummaryWriter()
 

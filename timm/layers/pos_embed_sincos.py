@@ -269,7 +269,8 @@ def apply_rot_embed_cat(
         emb: torch.Tensor,
         half: bool = False
 ) -> torch.Tensor:
-    sin_emb, cos_emb = emb.tensor_split(2, -1)
+    # sin_emb, cos_emb = emb.tensor_split(2, -1)
+    sin_emb, cos_emb = torch.chunk(emb, 2, dim=-1)
     # Adjust dimensions if needed
     if x.size(-1) != sin_emb.size(-1):
         # For DINOv3 models, we need to handle special case where input dim is smaller than embedding dim
@@ -1069,7 +1070,8 @@ class RotaryEmbeddingDinoV3(nn.Module):
 
         if self.rotate_half:
             # Tile (half layout) (HW, dim // 2) -> (HW, dim)
-            angles = angles.tile(2)
+            # angles = angles.tile(2)
+            angles = torch.cat([angles, angles], dim=-1)
         else:
             # Interleaved layout (HW, dim // 2) -> (HW, dim)
             angles = angles.repeat_interleave(2, dim=-1)

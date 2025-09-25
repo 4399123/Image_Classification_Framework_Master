@@ -184,7 +184,7 @@ class ResizeToSequence(torch.nn.Module):
         else:
             interpolation = self.interpolation
 
-        resized_img = transforms.functional.resize(img, target_hw, interpolation=interpolation, antialias=True)
+        resized_img = transforms.functional.resize(img, target_hw, interpolation=interpolation, antialias=False)
 
         return resized_img
 
@@ -724,7 +724,7 @@ class RandomResizedCropToSequence(torch.nn.Module):
             width=crop_w,
             size=final_size,
             interpolation=interpolation,
-            antialias=True,
+            antialias=False,
         )
 
         return output

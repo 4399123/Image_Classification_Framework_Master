@@ -444,7 +444,7 @@ class NaFlexEmbeds(nn.Module):
                 in_chans=in_chans,
                 embed_dim=embed_dim,
                 interpolation=pos_embed_interp_mode,
-                antialias=True,
+                antialias=False,
             )
         else:
             self.patch_interpolator = None
@@ -557,7 +557,7 @@ class NaFlexEmbeds(nn.Module):
                     size=_interp_size,
                     mode=self.pos_embed_interp_mode,
                     align_corners=False,
-                    antialias=True,
+                    antialias=False,
                 )[:, :, :size[0], :size[1]].flatten(2).transpose(1, 2)
             return pos_embed_flat.to(dtype=x.dtype)
 
@@ -654,7 +654,7 @@ class NaFlexEmbeds(nn.Module):
                 size=_interp_size,
                 mode=self.pos_embed_interp_mode,
                 align_corners=False,
-                antialias=True,
+                antialias=False,
             )[:, :, :grid_size[0], :grid_size[1]].flatten(2).transpose(1, 2)
         pos_embed_flat = pos_embed_flat.to(dtype=x.dtype)
 

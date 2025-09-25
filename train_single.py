@@ -62,7 +62,8 @@ time_meter= TimeMeter(args.epochs)
 # net=Net('vit_base_patch16_dinov3.lvd_1689m',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('fastvit_mci3.apple_mclip2_dfndr2b',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('naflexvit_base_patch16_siglip.v2_webli',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
-net=Net('fasternet_t0.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('fasternet_t0.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+net=Net('rdnet_small.nv_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 
 
 model_ema=None
@@ -92,7 +93,7 @@ else:
 net, optimizer, train_loader = accelerator.prepare(net, optimizer, train_loader)
 schedule=CosineLRScheduler(optimizer=optimizer,
                            t_initial=args.epochs,
-                           lr_min=9.5e-5,
+                           lr_min=1e-7,
                            warmup_t=5,
                            warmup_lr_init=1e-4)
 time.sleep(2)

@@ -30,8 +30,8 @@ def get_device_info():
     if torch.cuda.is_available():
 
         ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
-        accelerator = Accelerator(kwargs_handlers=[ddp_kwargs])
-        # accelerator = Accelerator(kwargs_handlers=[ddp_kwargs],mixed_precision='fp16')
+        # accelerator = Accelerator(kwargs_handlers=[ddp_kwargs])
+        accelerator = Accelerator(kwargs_handlers=[ddp_kwargs],mixed_precision='fp16')
         # accelerator = Accelerator(mixed_precision='fp16')
         # torch.set_default_tensor_type('torch.cuda.FloatTensor')
         # accelerator = Accelerator(mixed_precision='bf16')

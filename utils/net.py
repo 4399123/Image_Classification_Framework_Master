@@ -169,11 +169,12 @@ class Net(nn.Module):
 
 if __name__=="__main__":
     # net=Net('convnext_pico.d1_in1k',num_class=9,embeddingdim=128,mode='pred')
-    net = Net('convnext_tiny.dinov3_lvd1689m', num_class=9, embeddingdim=128, mode='pred')
+    # net = Net('convnext_tiny.dinov3_lvd1689m', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('vit_base_patch16_dinov3.lvd_1689m', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('fastvit_mci3.apple_mclip2_dfndr2b', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('naflexvit_base_patch16_siglip.v2_webli', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('fasternet_t0.in1k', num_class=9, embeddingdim=128, mode='pred')
+    net = Net('rdnet_small.nv_in1k', num_class=9, embeddingdim=128, mode='pred')
     # summary(net,(3,224,224))
     net.eval()
     in_ten = torch.randn(3, 3,512, 512)

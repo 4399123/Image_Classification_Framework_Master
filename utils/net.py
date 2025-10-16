@@ -105,6 +105,7 @@ class classifier(nn.Module):
         super().__init__()
         self.fc1 = nn.Linear(in_ch, embedding_dim)
         self.fc2 = nn.Linear(embedding_dim, num_classes)
+        self.bn1 = nn.BatchNorm1d(embedding_dim)
 
     def forward(self, x: torch.Tensor):
         # <--- 优化点: 使用 torch.mean 实现全局平均池化
@@ -113,7 +114,8 @@ class classifier(nn.Module):
         x = torch.mean(x, dim=(-2, -1), keepdim=True)
         x = torch.flatten(x, 1)
         x = self.fc1(x)
-        feature = F.relu(x)
+        x = self.bn1(x)
+        feature = F.gelu(x)
         out = self.fc2(feature)
         return feature, out
 

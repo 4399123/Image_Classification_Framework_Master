@@ -1,3 +1,4 @@
 utils/premodels/convnext_tiny_dinov3.pth
 utils/premodels/
 pt/
+onnx/

@@ -320,6 +320,7 @@ class MambaOut(nn.Module):
         self.num_classes = num_classes
         self.drop_rate = drop_rate
         self.output_fmt = 'NHWC'
+        # self.output_fmt = 'NCHW'
         if not isinstance(depths, (list, tuple)):
             depths = [depths]  # it means the model has only one stage
         if not isinstance(dims, (list, tuple)):

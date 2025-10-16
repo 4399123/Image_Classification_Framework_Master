@@ -130,6 +130,11 @@ class Net(nn.Module):
         else:
             filename=model_name.split('.')[0]
 
+        if('mambaout') in model_name:  #mambaout 系列的输出为（B,H,W,C）
+            self.channel_last=True
+        else:
+            self.channel_last=False
+
         try :
             load_checkpoint(self.backbone, './premodels/{}.pth'.format(filename))
         except:
@@ -155,6 +160,8 @@ class Net(nn.Module):
 
     def forward(self, x):
         x = self.backbone(x)[0]
+        if self.channel_last:
+            x = x.permute((0, 3, 1, 2)).contiguous()
         feature,out= self.classifier(x)
         if self.mode=='train':
             return feature,out
@@ -176,10 +183,11 @@ if __name__=="__main__":
     # net = Net('fastvit_mci3.apple_mclip2_dfndr2b', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('naflexvit_base_patch16_siglip.v2_webli', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('fasternet_t0.in1k', num_class=9, embeddingdim=128, mode='pred')
-    net = Net('rdnet_small.nv_in1k', num_class=9, embeddingdim=128, mode='pred')
+    # net = Net('rdnet_small.nv_in1k', num_class=9, embeddingdim=128, mode='pred')
+    net = Net('mambaout_femto.in1k', num_class=9, embeddingdim=128, mode='pred')
     # summary(net,(3,224,224))
     net.eval()
-    in_ten = torch.randn(3, 3,512, 512)
+    in_ten = torch.randn(3, 3,224, 224)
     index,score=net(in_ten)
     print(index)
     print(score)

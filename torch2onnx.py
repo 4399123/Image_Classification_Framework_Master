@@ -11,8 +11,10 @@ import onnxoptimizer
 # model=Net('fastvit_mci3.apple_mclip2_dfndr2b',num_class=64,embeddingdim=512,mode='pred')
 # model=Net('naflexvit_base_patch16_siglip.v2_webli',num_class=64,embeddingdim=512,mode='pred')
 # model=Net('fasternet_t0.in1k',num_class=64,embeddingdim=512,mode='pred')
-model=Net('rdnet_small.nv_in1k',num_class=64,embeddingdim=512,mode='pred')
-model.load_state_dict(torch.load('./pt/rdnet_small.pt',map_location='cpu'))
+# model=Net('rdnet_small.nv_in1k',num_class=64,embeddingdim=512,mode='pred')
+# model=Net('mambaout_femto.in1k',num_class=64,embeddingdim=512,mode='pred')
+model=Net('tf_efficientnet_b1.ns_jft_in1k',num_class=64,embeddingdim=512,mode='pred')
+model.load_state_dict(torch.load('./pt/tf_efficientnet_b1.pt',map_location='cpu'))
 model.eval()
 
 input_name = 'input'
@@ -30,6 +32,8 @@ torch.onnx.export(model, x, './onnx/best.onnx', input_names=[input_name], output
                   },
                   opset_version=16,
                   do_constant_folding=True)
+
+
 
 print('step 1 ok')
 model = onnx.load('./onnx/best.onnx')

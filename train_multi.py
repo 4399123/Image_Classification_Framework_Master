@@ -65,7 +65,8 @@ time_meter= TimeMeter(args.epochs)
 # net=Net('naflexvit_base_patch16_siglip.v2_webli',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('fasternet_t0.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('rdnet_small.nv_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
-net=Net('mambaout_femto.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('mambaout_femto.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+net=Net('tf_efficientnet_b1.ns_jft_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 
 model_ema=None
 if args.model_ema:
@@ -91,10 +92,11 @@ if args.arcloss:
                                           embedding_regularizer=regularizers.CenterInvariantRegularizer(),
                                           embedding_reg_weight=0.01
                                           ).to(device)
-    optimizer = AdamP([{'params':net.parameters()},{'params':arcloss.parameters()}], lr=args.lr, weight_decay=5e-4, nesterov=True)
-    #optimizer = Lamb([{'params': net.parameters()}, {'params': arcloss.parameters()}], lr=args.lr, weight_decay=5e-4)
+    #optimizer = AdamP([{'params':net.parameters()},{'params':arcloss.parameters()}], lr=args.lr, weight_decay=5e-4, nesterov=True)
+    optimizer = AdamW([{'params': net.parameters()}, {'params': arcloss.parameters()}], lr=args.lr, weight_decay=5e-4)
 else:
-    optimizer = AdamP(net.parameters(),lr=args.lr,weight_decay=5e-4,nesterov=True)
+    # optimizer = AdamP(net.parameters(),lr=args.lr,weight_decay=5e-4,nesterov=True)
+    optimizer = AdamW(net.parameters(), lr=args.lr, weight_decay=5e-4)
 
 # 训练加速器加载
 net, optimizer, train_loader = accelerator.prepare(net, optimizer, train_loader)

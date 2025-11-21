@@ -106,7 +106,6 @@ class classifier(nn.Module):
         self.fc1 = nn.Linear(in_ch, embedding_dim)
         self.fc2 = nn.Linear(embedding_dim, num_classes)
         self.bn1 = nn.BatchNorm1d(embedding_dim)
-
     def forward(self, x: torch.Tensor):
         # <--- 优化点: 使用 torch.mean 实现全局平均池化
         # dim=(-2, -1) 表示对最后两个维度 (H, W) 求均值
@@ -184,7 +183,8 @@ if __name__=="__main__":
     # net = Net('naflexvit_base_patch16_siglip.v2_webli', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('fasternet_t0.in1k', num_class=9, embeddingdim=128, mode='pred')
     # net = Net('rdnet_small.nv_in1k', num_class=9, embeddingdim=128, mode='pred')
-    net = Net('mambaout_femto.in1k', num_class=9, embeddingdim=128, mode='pred')
+    # net = Net('mambaout_femto.in1k', num_class=9, embeddingdim=128, mode='pred')
+    net = Net('tf_efficientnet_b1.ns_jft_in1k', num_class=9, embeddingdim=128, mode='pred')
     # summary(net,(3,224,224))
     net.eval()
     in_ten = torch.randn(3, 3,224, 224)

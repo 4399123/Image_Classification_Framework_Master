@@ -8,3 +8,7 @@ epoch:1/300,batch:4/16,lr:0.000100,train loss:6.02862,train acc:3.12%
 epoch:1/300,batch:5/16,lr:0.000100,train loss:6.03963,train acc:2.34%
 epoch:1/300,batch:6/16,lr:0.000100,train loss:5.74604,train acc:3.12%
 epoch:1/300,batch:7/16,lr:0.000100,train loss:5.83719,train acc:3.52%
+Namespace(arcloss=True, bs=64, checkpoint=False, checkpoint_path='./pt/1.pt', embeddingdim=512, epochs=300, finetune_from=None, loss=1, lr=0.0003, model_ema=True, pathtrain='../TextureDataset/train', pathval='../TextureDataset/val')
+No checkpoint found at './premodels/starnet_s3.pth'
+Loaded  from checkpoint './utils/premodels/starnet_s3.pth'
+epoch:1/300,batch:6/67,lr:0.000100,train loss:7.98696,train acc:1.56%

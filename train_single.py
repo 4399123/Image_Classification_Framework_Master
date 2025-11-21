@@ -22,9 +22,9 @@ import json
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 parser=argparse.ArgumentParser("classification")
-parser.add_argument('--pathtrain',default=r'C:\BaiduNetdiskDownload\Splited/train',help='train data')
-parser.add_argument('--pathval',default=r'C:\BaiduNetdiskDownload\Splited/val',help='val data')
-parser.add_argument('--bs',default=256,type=int,help='batchsize')
+parser.add_argument('--pathtrain',default=r'../TextureDataset/train',help='train data')
+parser.add_argument('--pathval',default=r'../TextureDataset/val',help='val data')
+parser.add_argument('--bs',default=128,type=int,help='batchsize')
 parser.add_argument('--lr',default=0.0003)
 parser.add_argument('--epochs',default=300)
 parser.add_argument('--loss',default='1',type=int,help='损失函数种类:0-4')
@@ -63,8 +63,9 @@ time_meter= TimeMeter(args.epochs)
 # net=Net('fastvit_mci3.apple_mclip2_dfndr2b',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('naflexvit_base_patch16_siglip.v2_webli',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 # net=Net('fasternet_t0.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
-net=Net('rdnet_small.nv_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
-
+# net=Net('rdnet_small.nv_in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+# net=Net('mambaout_femto.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
+net=Net('starnet_s3.in1k',num_class=num_classes,embeddingdim=args.embeddingdim,mode='train').to(device)
 
 model_ema=None
 if args.model_ema:

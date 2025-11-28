@@ -26,10 +26,10 @@ with open('./pt/lable.plk','rb') as f:
 #输入图像预处理
 img=cv2.imread(pic_path)
 img=cv2.resize(img,(w,h))
-img=img[:,:,::-1]
-img = np.array(img).astype(np.float32)  # 注意输入type一定要np.float32
-img -= mean
-img /= std
+# img=img[:,:,::-1]
+# img = np.array(img).astype(np.float32)  # 注意输入type一定要np.float32
+# img -= mean
+# img /= std
 img = np.array([np.transpose(img, (2, 0, 1))])
 
 

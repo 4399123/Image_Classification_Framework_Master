@@ -158,6 +158,17 @@ class Net(nn.Module):
         self.mode=mode
 
     def forward(self, x):
+        if (self.mode == 'pred'):
+            x = x.float()
+            # x = x[:,[2,1,0],...]
+            x = torch.flip(x, dims=[1])
+
+            # 定义均值和方差
+            mean = torch.tensor([127.5, 127.5, 127.5]).view(1, 3, 1, 1)
+            std = torch.tensor([127.5, 127.5, 127.5]).view(1, 3, 1, 1)
+
+            # 归一化：(x - mean) / std
+            x = (x - mean) / std
         x = self.backbone(x)[0]
         if self.channel_last:
             x = x.permute((0, 3, 1, 2)).contiguous()

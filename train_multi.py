@@ -19,7 +19,7 @@ from pytorch_metric_learning import losses,regularizers,miners
 # from timm.models import convnext
 from tqdm import tqdm
 import json
-os.environ["CUDA_VISIBLE_DEVICES"]="2,3"
+os.environ["CUDA_VISIBLE_DEVICES"]="0,1"
 
 parser=argparse.ArgumentParser("classification")
 parser.add_argument('--pathtrain',default=r'../TextureDataset/train',help='train data')
